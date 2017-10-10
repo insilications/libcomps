@@ -1,0 +1,1 @@
+-DPYTHON_DESIRED:STRING=3 -Wno-dev ../libcomps/
