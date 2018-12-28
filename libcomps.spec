@@ -4,7 +4,7 @@
 #
 Name     : libcomps
 Version  : 0.1.8
-Release  : 11
+Release  : 12
 URL      : https://github.com/rpm-software-management/libcomps/archive/libcomps-0.1.8.tar.gz
 Source0  : https://github.com/rpm-software-management/libcomps/archive/libcomps-0.1.8.tar.gz
 Summary  : alternative for yum.libcomps written in C
