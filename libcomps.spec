@@ -4,21 +4,25 @@
 #
 Name     : libcomps
 Version  : 0.1.8
-Release  : 12
+Release  : 13
 URL      : https://github.com/rpm-software-management/libcomps/archive/libcomps-0.1.8.tar.gz
 Source0  : https://github.com/rpm-software-management/libcomps/archive/libcomps-0.1.8.tar.gz
 Summary  : alternative for yum.libcomps written in C
 Group    : Development/Tools
 License  : GPL-2.0
-Requires: libcomps-python3
-Requires: libcomps-lib
-Requires: libcomps-python
+Requires: libcomps-lib = %{version}-%{release}
+Requires: libcomps-license = %{version}-%{release}
+Requires: libcomps-python = %{version}-%{release}
+Requires: libcomps-python3 = %{version}-%{release}
+BuildRequires : Sphinx
+BuildRequires : buildreq-cmake
 BuildRequires : check-dev
-BuildRequires : cmake
 BuildRequires : doxygen
+BuildRequires : expat-dev
 BuildRequires : libxml2-dev
 BuildRequires : pkgconfig(expat)
 BuildRequires : python3-dev
+Patch1: CVE-2019-3817.patch
 
 %description
 libcomps
@@ -29,8 +33,8 @@ and there's bindings for python2 and python3.
 %package dev
 Summary: dev components for the libcomps package.
 Group: Development
-Requires: libcomps-lib
-Provides: libcomps-devel
+Requires: libcomps-lib = %{version}-%{release}
+Provides: libcomps-devel = %{version}-%{release}
 
 %description dev
 dev components for the libcomps package.
@@ -39,15 +43,24 @@ dev components for the libcomps package.
 %package lib
 Summary: lib components for the libcomps package.
 Group: Libraries
+Requires: libcomps-license = %{version}-%{release}
 
 %description lib
 lib components for the libcomps package.
 
 
+%package license
+Summary: license components for the libcomps package.
+Group: Default
+
+%description license
+license components for the libcomps package.
+
+
 %package python
 Summary: python components for the libcomps package.
 Group: Default
-Requires: libcomps-python3
+Requires: libcomps-python3 = %{version}-%{release}
 
 %description python
 python components for the libcomps package.
@@ -64,22 +77,30 @@ python3 components for the libcomps package.
 
 %prep
 %setup -q -n libcomps-libcomps-0.1.8
+%patch1 -p1
 
 %build
 export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C
-export SOURCE_DATE_EPOCH=1507658245
-mkdir clr-build
+export SOURCE_DATE_EPOCH=1552420299
+mkdir -p clr-build
 pushd clr-build
-cmake .. -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS:BOOL=ON -DLIB_INSTALL_DIR:PATH=/usr/lib64 -DCMAKE_AR=/usr/bin/gcc-ar -DLIB_SUFFIX=64 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_RANLIB=/usr/bin/gcc-ranlib -DPYTHON_DESIRED:STRING=3 -Wno-dev ../libcomps/
-make VERBOSE=1  %{?_smp_mflags}
+export LDFLAGS="${LDFLAGS} -fno-lto"
+export CFLAGS="$CFLAGS -fstack-protector-strong -mzero-caller-saved-regs=used "
+export FCFLAGS="$CFLAGS -fstack-protector-strong -mzero-caller-saved-regs=used "
+export FFLAGS="$CFLAGS -fstack-protector-strong -mzero-caller-saved-regs=used "
+export CXXFLAGS="$CXXFLAGS -fstack-protector-strong -mzero-caller-saved-regs=used "
+%cmake .. -DPYTHON_DESIRED:STRING=3 -Wno-dev ../libcomps/
+make  %{?_smp_mflags} VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1507658245
+export SOURCE_DATE_EPOCH=1552420299
 rm -rf %{buildroot}
+mkdir -p %{buildroot}/usr/share/package-licenses/libcomps
+cp COPYING %{buildroot}/usr/share/package-licenses/libcomps/COPYING
 pushd clr-build
 %make_install
 popd
@@ -119,6 +140,10 @@ popd
 %files lib
 %defattr(-,root,root,-)
 /usr/lib64/libcomps.so.0.1.6
+
+%files license
+%defattr(0644,root,root,0755)
+/usr/share/package-licenses/libcomps/COPYING
 
 %files python
 %defattr(-,root,root,-)
