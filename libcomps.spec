@@ -4,7 +4,7 @@
 #
 Name     : libcomps
 Version  : 0.1.14
-Release  : 18
+Release  : 19
 URL      : https://github.com/rpm-software-management/libcomps/archive/libcomps-0.1.14/libcomps-0.1.14.tar.gz
 Source0  : https://github.com/rpm-software-management/libcomps/archive/libcomps-0.1.14/libcomps-0.1.14.tar.gz
 Summary  : Comps XML file manipulation library
