@@ -4,7 +4,7 @@
 #
 Name     : libcomps
 Version  : 0.1.14
-Release  : 19
+Release  : 20
 URL      : https://github.com/rpm-software-management/libcomps/archive/libcomps-0.1.14/libcomps-0.1.14.tar.gz
 Source0  : https://github.com/rpm-software-management/libcomps/archive/libcomps-0.1.14/libcomps-0.1.14.tar.gz
 Summary  : Comps XML file manipulation library
@@ -34,6 +34,7 @@ Summary: dev components for the libcomps package.
 Group: Development
 Requires: libcomps-lib = %{version}-%{release}
 Provides: libcomps-devel = %{version}-%{release}
+Requires: libcomps = %{version}-%{release}
 Requires: libcomps = %{version}-%{release}
 
 %description dev
@@ -84,20 +85,21 @@ export http_proxy=http://127.0.0.1:9/
 export https_proxy=http://127.0.0.1:9/
 export no_proxy=localhost,127.0.0.1,0.0.0.0
 export LANG=C.UTF-8
-export SOURCE_DATE_EPOCH=1575645601
+export SOURCE_DATE_EPOCH=1583167152
 mkdir -p clr-build
 pushd clr-build
+# -Werror is for werrorists
 export GCC_IGNORE_WERROR=1
-export CFLAGS="$CFLAGS -fno-lto -fstack-protector-strong -mzero-caller-saved-regs=used "
-export FCFLAGS="$CFLAGS -fno-lto -fstack-protector-strong -mzero-caller-saved-regs=used "
-export FFLAGS="$CFLAGS -fno-lto -fstack-protector-strong -mzero-caller-saved-regs=used "
-export CXXFLAGS="$CXXFLAGS -fno-lto -fstack-protector-strong -mzero-caller-saved-regs=used "
+export CFLAGS="$CFLAGS -fcf-protection=full -fno-lto -fstack-protector-strong "
+export FCFLAGS="$CFLAGS -fcf-protection=full -fno-lto -fstack-protector-strong "
+export FFLAGS="$CFLAGS -fcf-protection=full -fno-lto -fstack-protector-strong "
+export CXXFLAGS="$CXXFLAGS -fcf-protection=full -fno-lto -fstack-protector-strong "
 %cmake .. -DPYTHON_DESIRED:STRING=3 -Wno-dev ../libcomps/
 make  %{?_smp_mflags}  VERBOSE=1
 popd
 
 %install
-export SOURCE_DATE_EPOCH=1575645601
+export SOURCE_DATE_EPOCH=1583167152
 rm -rf %{buildroot}
 mkdir -p %{buildroot}/usr/share/package-licenses/libcomps
 cp %{_builddir}/libcomps-libcomps-0.1.14/COPYING %{buildroot}/usr/share/package-licenses/libcomps/4cc77b90af91e615a64ae04893fdffa7939db84c
